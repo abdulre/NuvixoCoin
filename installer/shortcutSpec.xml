@@ -1,13 +1,29 @@
 <shortcuts>
 	<skipIfNotSupported/>
 	<defaultCurrentUser/>
-	<programGroup defaultName="NXT" location="startMenu"/>
+	<programGroup defaultName="NuvixoCoin" location="startMenu"/>
 	<shortcut
-		name="Nxt Server"
-		target="$INSTALL_PATH\nxt.exe"
+		name="NuvixoCoin Server"
+		target="$INSTALL_PATH\NuvixoCoin.exe"
 		commandLine=""
 		workingDirectory="$INSTALL_PATH"
-        description="Start NXT server"
+        description="Start NuvixoCoin server"
+		iconFile="$INSTALL_PATH\html\www\favicon.ico"
+        iconIndex="0"
+        initialState="normal"
+        programGroup="yes"
+		desktop="yes"
+        applications="no"
+        startMenu="no"
+		startup="no"
+		runAsAdministrator="true">
+	</shortcut>	
+	<shortcut
+		name="NuvixoCoin Wallet"
+		target="http://localhost:5876/index.html"
+		commandLine=""
+		workingDirectory="$INSTALL_PATH"
+        description="Launch NuvixoCoin wallet in browser"
 		iconFile="$INSTALL_PATH\html\www\favicon.ico"
         iconIndex="0"
         initialState="normal"
