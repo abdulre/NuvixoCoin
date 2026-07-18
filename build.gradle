@@ -1,0 +1,152 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group   = 'com.nuvixocoin'
+version = '2.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass = 'nxt.Nxt'
+    // Baked into the generated bin/nuvixocoin launcher script so these apply
+    // consistently whether it's run manually, via systemd, or any other way —
+    // override at runtime with JAVA_OPTS if a deployment needs different limits.
+    applicationDefaultJvmArgs = ['-Xms256M', '-Xmx512M']
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // ── HTTP Server ─────────────────────────────────────────────────────────
+    // Jetty 11.0.20 — source code already migrated to jakarta.servlet (see MIGRATION-LOG.md)
+    implementation 'org.eclipse.jetty:jetty-server:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-servlet:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-servlets:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-security:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-proxy:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-client:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-http:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-io:11.0.20'
+    implementation 'org.eclipse.jetty:jetty-util:11.0.20'
+    implementation 'org.eclipse.jetty.websocket:websocket-jetty-api:11.0.20'
+    implementation 'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.20'
+    implementation 'org.eclipse.jetty.websocket:websocket-jetty-client:11.0.20'
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+
+    // ── Database ────────────────────────────────────────────────────────────
+    // H2 1.x had CVE-2021-42392 (RCE via JNDI). H2 2.x is the fix.
+    // IDENTITY/ARRAY/VALUE-keyword syntax already migrated — see MIGRATION-LOG.md
+    // See UPGRADE-NOTES.md for SQL syntax changes required.
+    implementation 'com.h2database:h2:2.2.224'
+
+    // ── Cryptography ────────────────────────────────────────────────────────
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+
+    // ── Search ──────────────────────────────────────────────────────────────
+    // Lucene 5 is EOL. 9.x has significant API changes — see UPGRADE-NOTES.md.
+    // Deliberately NOT depending on lucene-backward-codecs: NuvixoCoin's
+    // FullTextTrigger.init() always calls removeIndexFiles() and rebuilds the
+    // Lucene index from scratch before ever opening a writer or reader (see
+    // the "Lucene search index deleted" log line on every startup) — there is
+    // no code path that reads an index written by an older Lucene version, so
+    // the backward-compat codecs this artifact provides are never exercised.
+    // (Earlier versions of this comment blamed a fat-jar SPI conflict for
+    // omitting this — that conflict no longer applies now that dependencies
+    // are kept as separate jars rather than merged into one; it would be safe
+    // to add back if ever needed, just not currently useful.)
+    implementation 'org.apache.lucene:lucene-core:9.10.0'
+    implementation 'org.apache.lucene:lucene-analysis-common:9.10.0'
+    implementation 'org.apache.lucene:lucene-queryparser:9.10.0'
+
+    // ── File metadata detection ─────────────────────────────────────────────
+    implementation 'org.apache.tika:tika-core:2.9.1'
+    implementation 'org.apache.tika:tika-parsers-standard-package:2.9.1'
+
+    // ── Logging ─────────────────────────────────────────────────────────────
+    implementation 'org.slf4j:slf4j-api:2.0.13'
+    implementation 'org.slf4j:slf4j-jdk14:2.0.13'
+
+    // ── QR codes ────────────────────────────────────────────────────────────
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'com.google.zxing:javase:3.5.3'
+
+    // ── JSON ────────────────────────────────────────────────────────────────
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+    // ── UPnP ────────────────────────────────────────────────────────────────
+    // Correct Maven coordinates are org.bitlet:weupnp — the Java package name
+    // (net.sbbi.upnp.*) is NOT the same as the Maven groupId, they diverged
+    // when this library was published.
+    implementation 'org.bitlet:weupnp:0.1.4'
+
+    // ── Code generation (kept from 1.13.1) ──────────────────────────────────
+    implementation 'com.squareup:javapoet:1.13.0'
+}
+
+// ── JAR manifest ─────────────────────────────────────────────────────────────
+// No custom `from`/zipTree/exclude logic here anymore — this is a plain jar
+// containing only NuvixoCoin's own compiled classes, exactly Gradle's default
+// behavior. Dependencies are kept as separate, untouched jars via the
+// `application` plugin's installDist/distZip tasks (see build instructions in
+// MIGRATION-LOG.md) rather than unpacked and merged into one fat jar. This is
+// what actually fixes the Bouncy Castle signature-verification failure and the
+// Lucene SPI resolution failure from earlier rounds: both were caused by
+// unpacking and repacking signed/SPI-registering jars into a combined zip,
+// which corrupts per-file signatures and fragments multi-jar SPI registrations
+// that Java's ServiceLoader is designed to discover separately across an
+// ordinary multi-jar classpath. Keeping dependency jars intact removes the
+// problem at its source instead of working around it.
+jar {
+    archiveFileName = 'nuvixocoin.jar'
+    manifest {
+        attributes(
+            'Main-Class': 'nxt.Nxt',
+            'Implementation-Title': 'NuvixoCoin',
+            'Implementation-Version': version
+        )
+    }
+}
+
+// ── Source sets ──────────────────────────────────────────────────────────────
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/java']
+            // nxtdesktop.* requires JavaFX, which was removed from the JDK in Java 11
+            // and needs separate platform-specific org.openjfx dependencies. It's an
+            // optional native desktop wrapper around the web wallet UI — the node itself
+            // (nxt.Nxt) never references it directly, only via Class.forName(...) reflection
+            // wrapped in try/catch in DesktopMode.java and DesktopSystemTray.java, both of
+            // which already degrade gracefully if the class isn't present. Excluding it here
+            // avoids pulling in the JavaFX dependency graph for a feature that isn't needed
+            // to compile or run the node. Use the PWA (html/www) or the Cordova mobile wallet
+            // (html-mobile/) instead of the native desktop wrapper.
+            exclude 'nxtdesktop/**'
+        }
+        resources { srcDirs = ['conf'] }
+    }
+    test {
+        java { srcDirs = ['test/java'] }
+    }
+}
+
+// ── OWASP CVE scanner — REMOVED from main build ────────────────────────────
+// The org.owasp.dependencycheck plugin v9.2.0 has a known Gradle API
+// compatibility conflict (NoSuchMethodError-class failures on
+// ObjectFactory.domainObjectContainer) that the plugin's own maintainers
+// document as a recurring issue across versions. Rather than fight Gradle
+// plugin-version roulette, run the standalone CLI scanner instead — it has
+// no Gradle coupling at all:
+//   https://github.com/dependency-check/DependencyCheck/releases
+// Or re-add the Gradle plugin later, pinned to whatever version is
+// confirmed compatible with your installed Gradle version at that time.
+
+// ── Compile options ──────────────────────────────────────────────────────────
+compileJava.options.encoding = 'UTF-8'

@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Class-Path: lib/lucene-backward-codecs-5.5.5.jar lib/jetty-io-9.3.30.v
+ 20211001.jar lib/weupnp-0.1.4.jar lib/lucene-analyzers-common-5.5.5.j
+ ar lib/javase-3.3.0.jar lib/jetty-security-9.3.30.v20211001.jar lib/w
+ ebsocket-api-9.3.30.v20211001.jar lib/lucene-core-5.5.5.jar lib/webso
+ cket-servlet-9.3.30.v20211001.jar lib/jetty-server-9.3.30.v20211001.j
+ ar lib/jetty-client-9.3.30.v20211001.jar lib/websocket-common-9.3.30.
+ v20211001.jar lib/tika-parsers-1.13.jar lib/javax.servlet-api-3.1.0.j
+ ar lib/bcprov-jdk15on-170.jar lib/slf4j-api-1.7.22.jar lib/jetty-util
+ -9.3.30.v20211001.jar lib/lucene-queryparser-5.5.5.jar lib/jetty-serv
+ let-9.3.30.v20211001.jar lib/core-3.3.0.jar lib/javapoet-1.11.0.jar l
+ ib/h2-1.4.200.jar lib/websocket-client-9.3.30.v20211001.jar lib/slf4j
+ -jdk14-1.7.22.jar lib/tika-core-1.13.jar lib/lucene-queries-5.5.5.jar
+  lib/json-simple-1.1.1.jar lib/jetty-servlets-9.3.30.v20211001.jar li
+ b/jetty-continuation-9.3.30.v20211001.jar lib/jetty-http-9.3.30.v2021
+ 1001.jar lib/jetty-proxy-9.3.30.v20211001.jar lib/websocket-server-9.
+ 3.30.v20211001.jar conf/
+Main-Class: nxt.Nxt
+

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <rect width="400" height="120" fill="#1a3a5c" rx="8"/>
+  <circle cx="60" cy="60" r="45" fill="#00d4ff" opacity="0.15"/>
+  <text x="60" y="75" font-family="Arial,sans-serif" font-weight="bold"
+        font-size="28" fill="#00d4ff" text-anchor="middle">NXC</text>
+  <text x="230" y="52" font-family="Arial,sans-serif" font-weight="bold"
+        font-size="30" fill="#ffffff" text-anchor="middle">NuvixoCoin</text>
+  <text x="230" y="82" font-family="Arial,sans-serif"
+        font-size="16" fill="#00d4ff" text-anchor="middle">Decentralized. Secure. Yours.</text>
+</svg>

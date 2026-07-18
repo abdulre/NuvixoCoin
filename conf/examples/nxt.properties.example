@@ -1,0 +1,31 @@
+# ── NuvixoCoin Node Configuration ────────────────────────────────────────────
+# Copy this file to conf/nxt.properties and fill in your values.
+# NEVER commit conf/nxt.properties to version control.
+
+# ── REQUIRED: Admin Password ──────────────────────────────────────────────────
+# Generate a strong password with: openssl rand -base64 32
+nxt.adminPassword=CHANGE_THIS_TO_A_STRONG_PASSWORD
+
+# ── Network Identity ──────────────────────────────────────────────────────────
+# Your public IP or domain name (leave blank for local-only)
+nxt.myAddress=
+
+# Optional: human-readable platform description shown to peers
+nxt.myPlatform=NuvixoCoin Node
+
+# ── Peers ─────────────────────────────────────────────────────────────────────
+# Semicolon-separated list of your bootstrap/well-known peers
+# Example: nxt.wellKnownPeers=node1.nuvixocoin.io;node2.nuvixocoin.io
+nxt.wellKnownPeers=
+
+# ── API Access ────────────────────────────────────────────────────────────────
+# Change to 0.0.0.0 to allow external API access (set strong adminPassword first!)
+nxt.apiServerHost=127.0.0.1
+
+# ── Testnet ───────────────────────────────────────────────────────────────────
+# Set to true only for development/testing — never on mainnet
+nxt.isTestnet=false
+
+# ── Forging ───────────────────────────────────────────────────────────────────
+# Optionally auto-start forging on startup (use with caution)
+# nxt.startForging=false

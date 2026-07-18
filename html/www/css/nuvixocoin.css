@@ -1,0 +1,87 @@
+/* ── NuvixoCoin Brand Override ───────────────────────────────────────────── */
+
+:root {
+  --nxc-blue-dark:  #1a3a5c;
+  --nxc-blue-mid:   #1e4976;
+  --nxc-cyan:       #00d4ff;
+  --nxc-cyan-light: #7eeaff;
+  --nxc-white:      #ffffff;
+}
+
+/* Top navigation bar */
+.main-header .navbar,
+.skin-blue .main-header .navbar {
+  background-color: var(--nxc-blue-dark) !important;
+}
+
+.main-header .logo,
+.skin-blue .main-header .logo {
+  background-color: var(--nxc-blue-mid) !important;
+  color: var(--nxc-cyan) !important;
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.main-header .logo:hover,
+.skin-blue .main-header .logo:hover {
+  background-color: var(--nxc-blue-dark) !important;
+}
+
+/* Sidebar */
+.skin-blue .main-sidebar,
+.skin-blue .left-side {
+  background-color: var(--nxc-blue-dark) !important;
+}
+
+.skin-blue .sidebar-menu > li.active > a,
+.skin-blue .sidebar-menu > li:hover > a {
+  border-left-color: var(--nxc-cyan) !important;
+  background-color: var(--nxc-blue-mid) !important;
+}
+
+/* Primary buttons */
+.btn-primary {
+  background-color: var(--nxc-blue-mid) !important;
+  border-color: var(--nxc-blue-dark) !important;
+}
+.btn-primary:hover {
+  background-color: var(--nxc-cyan) !important;
+  border-color: var(--nxc-cyan) !important;
+  color: var(--nxc-blue-dark) !important;
+}
+
+/* Links */
+a { color: var(--nxc-blue-mid); }
+a:hover { color: var(--nxc-cyan); }
+
+/* Info boxes and small boxes */
+.small-box.bg-aqua,
+.info-box-icon.bg-aqua { background-color: var(--nxc-blue-mid) !important; }
+
+/* Dashboard balance box - make it pop */
+.dashboard_first_row .small-box h3 {
+  color: var(--nxc-white);
+}
+
+/* Loading screen */
+#login_check_container {
+  background: linear-gradient(135deg, var(--nxc-blue-dark) 0%, var(--nxc-blue-mid) 100%);
+}
+
+/* NRS version label on dashboard */
+#nrs_version_info {
+  color: var(--nxc-blue-mid);
+  font-weight: bold;
+}
+
+/* Logo in header */
+.main-header .logo img {
+  max-height: 35px;
+}
+
+/* Coin symbol highlights */
+.coin-symbol {
+  font-weight: bold;
+  color: var(--nxc-cyan-light);
+}

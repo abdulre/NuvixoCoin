@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#0a1628"/>
+  <circle cx="96" cy="96" r="75" fill="#1a3a5c" stroke="#00d4ff" stroke-width="3"/>
+  <circle cx="96" cy="96" r="62" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+  <text x="96" y="108" font-family="Arial Black,sans-serif" font-weight="900"
+        font-size="52" fill="#00d4ff" text-anchor="middle">NXC</text>
+</svg>

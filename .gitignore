@@ -1,0 +1,27 @@
+# Secrets — never commit
+conf/nxt.properties
+conf/nxt-installer.properties
+
+# Databases
+nuvixo_db/
+nuvixo_test_db/
+nxt_db/
+nxt_test_db/
+
+# Build output
+build/
+.gradle/
+classes/
+*.jar
+
+# Logs and runtime
+logs/
+*.log
+*.pid
+nxt-trace.csv
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store

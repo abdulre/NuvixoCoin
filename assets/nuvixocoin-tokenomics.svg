@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"/>
+      <stop offset="100%" style="stop-color:#1a3a5c"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg2)" rx="16"/>
+  <rect width="800" height="450" fill="none" stroke="#00d4ff" stroke-width="2" rx="16" opacity="0.3"/>
+
+  <!-- Title -->
+  <text x="400" y="50" font-family="Arial,sans-serif" font-weight="bold" font-size="28"
+        fill="#ffffff" text-anchor="middle">NuvixoCoin Tokenomics</text>
+  <text x="400" y="80" font-family="Arial,sans-serif" font-size="16"
+        fill="#7eeaff" text-anchor="middle" opacity="0.7">Total Supply: 1,000,000,000 NXC</text>
+
+  <!-- Divider -->
+  <line x1="60" y1="100" x2="740" y2="100" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+
+  <!-- PIE CHART (simplified as arc segments) -->
+  <!-- 88.89% Founder (large arc) - cyan -->
+  <path d="M 220 270 L 220 170 A 100 100 0 1 1 119.6 320.4 Z"
+        fill="#00d4ff" opacity="0.85"/>
+  <!-- 11.11% Community (small arc) - blue -->
+  <path d="M 220 270 L 119.6 320.4 A 100 100 0 0 1 220 170 Z"
+        fill="#1e6fa8" opacity="0.9"/>
+
+  <!-- Center circle -->
+  <circle cx="220" cy="270" r="55" fill="#0a1628"/>
+  <text x="220" y="263" font-family="Arial,sans-serif" font-weight="bold" font-size="16"
+        fill="#00d4ff" text-anchor="middle">1B</text>
+  <text x="220" y="283" font-family="Arial,sans-serif" font-size="12"
+        fill="#7eeaff" text-anchor="middle">NXC</text>
+
+  <!-- Legend -->
+  <!-- Founder -->
+  <rect x="380" y="150" width="20" height="20" rx="4" fill="#00d4ff" opacity="0.85"/>
+  <text x="410" y="165" font-family="Arial,sans-serif" font-weight="bold" font-size="16"
+        fill="#ffffff">Founder / Reserve</text>
+  <text x="410" y="190" font-family="Arial,sans-serif" font-size="28"
+        fill="#00d4ff" font-weight="bold">888,888,889 NXC</text>
+  <text x="410" y="215" font-family="Arial,sans-serif" font-size="14"
+        fill="#7eeaff" opacity="0.7">88.89% of total supply</text>
+  <text x="410" y="238" font-family="Arial,sans-serif" font-size="13"
+        fill="#ffffff" opacity="0.5">Development · Ecosystem · Listings</text>
+
+  <!-- Divider line -->
+  <line x1="380" y1="265" x2="730" y2="265" stroke="#00d4ff" stroke-width="1" opacity="0.2"/>
+
+  <!-- Community -->
+  <rect x="380" y="285" width="20" height="20" rx="4" fill="#1e6fa8" opacity="0.9"/>
+  <text x="410" y="300" font-family="Arial,sans-serif" font-weight="bold" font-size="16"
+        fill="#ffffff">Community / Genesis</text>
+  <text x="410" y="325" font-family="Arial,sans-serif" font-size="28"
+        fill="#7eeaff" font-weight="bold">111,111,111 NXC</text>
+  <text x="410" y="350" font-family="Arial,sans-serif" font-size="14"
+        fill="#7eeaff" opacity="0.7">11.11% of total supply</text>
+  <text x="410" y="373" font-family="Arial,sans-serif" font-size="13"
+        fill="#ffffff" opacity="0.5">Presale · Airdrop · Community</text>
+
+  <!-- Bottom stats -->
+  <line x1="60" y1="400" x2="740" y2="400" stroke="#00d4ff" stroke-width="1" opacity="0.2"/>
+  <text x="160" y="430" font-family="Arial,sans-serif" font-size="13"
+        fill="#7eeaff" text-anchor="middle">Proof of Stake</text>
+  <text x="320" y="430" font-family="Arial,sans-serif" font-size="13"
+        fill="#7eeaff" text-anchor="middle">60s Block Time</text>
+  <text x="480" y="430" font-family="Arial,sans-serif" font-size="13"
+        fill="#7eeaff" text-anchor="middle">No Inflation</text>
+  <text x="640" y="430" font-family="Arial,sans-serif" font-size="13"
+        fill="#7eeaff" text-anchor="middle">8 Decimals</text>
+</svg>
