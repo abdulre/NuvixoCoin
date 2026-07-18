@@ -5,7 +5,7 @@
 
   **A decentralized Proof-of-Stake blockchain platform**
 
-  [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/yourusername/nuvixocoin/releases)
+  [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/abdulre/NuvixoCoin/releases)
   [![Java](https://img.shields.io/badge/java-17%2B-orange.svg)](https://adoptium.net/)
   [![License](https://img.shields.io/badge/license-JPL%20v2.0-green.svg)](LICENSE.txt)
   [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey.svg)]()
@@ -61,6 +61,7 @@ NuvixoCoin (NXC) is a decentralized Proof-of-Stake cryptocurrency and blockchain
 ### Requirements
 
 - Java 17 or higher (OpenJDK recommended)
+- Gradle 8.7 or higher
 - 2 GB RAM minimum (4 GB recommended)
 - 10 GB disk space
 
@@ -68,29 +69,41 @@ NuvixoCoin (NXC) is a decentralized Proof-of-Stake cryptocurrency and blockchain
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/nuvixocoin.git
-cd nuvixocoin
+git clone https://github.com/abdulre/NuvixoCoin.git
+cd NuvixoCoin
 
-# 2. Install Java 17 (Ubuntu/Debian)
-sudo apt update && sudo apt install -y openjdk-17-jdk
+# 2. Install Java 17 and Gradle (Ubuntu/Debian)
+sudo apt update && sudo apt install -y openjdk-17-jdk gradle
 
-# 3. Compile
-./compile.sh
+# 3. Generate the Gradle wrapper (one-time)
+gradle wrapper --gradle-version 8.7
 
-# 4. Configure (copy the example and set your admin password)
+# 4. Configure — copy the example and set your own admin password
 cp conf/examples/nxt.properties.example conf/nxt.properties
-# Edit conf/nxt.properties and set nxt.adminPassword=your_strong_password
+# Edit conf/nxt.properties and set nxt.adminPassword=<your strong password>
+# Generate one with: openssl rand -base64 32
 
-# 5. Run
-./run.sh
+# 5. Build
+./gradlew installDist
+
+# 6. Run
+./build/install/nuvixocoin/bin/nuvixocoin
 ```
+
+> **Note:** the legacy `compile.sh` / `run.sh` scripts from the original NXT
+> codebase are no longer the supported build path — they compile against the
+> old bundled `lib/` jars rather than the modernized dependency set. Use the
+> Gradle commands above.
 
 ### Quick Start (Windows)
 
 ```bash
 # 1. Install Java 17 from https://adoptium.net/
-# 2. Double-click compile.bat
-# 3. Double-click run.bat
+# 2. Install Gradle from https://gradle.org/install/
+# 3. In the project folder, run:
+gradle wrapper --gradle-version 8.7
+gradlew.bat installDist
+build\install\nuvixocoin\bin\nuvixocoin.bat
 ```
 
 ### Access the Wallet
@@ -152,16 +165,29 @@ To package for transfer to a server:
 
 ## Running a Public Node
 
-To run a publicly accessible node on a VPS:
+To run a publicly accessible node on a VPS, use the automated setup script —
+it installs Java, builds the node, configures the firewall, and registers a
+systemd service so it survives reboots:
+
+```bash
+sudo bash scripts/vps-setup.sh
+```
+
+Or manually:
 
 ```bash
 # Open firewall ports
 sudo ufw allow 27874/tcp   # P2P
 sudo ufw allow 7876/tcp    # API (optional — only if you want public API access)
 
-# Run in background
-nohup ./run.sh > /dev/null 2>&1 &
+# Build and run in background
+./gradlew installDist
+nohup ./build/install/nuvixocoin/bin/nuvixocoin > /dev/null 2>&1 &
 ```
+
+> ⚠️ Before exposing the API publicly (`nxt.apiServerHost=0.0.0.0`), you **must**
+> set a strong `nxt.adminPassword` in `conf/nxt.properties`. The node refuses to
+> start otherwise.
 
 ---
 
@@ -181,6 +207,34 @@ curl "http://localhost:7876/nxt?requestType=getForging&adminPassword=your_passwo
 ```
 
 Full API documentation: [http://localhost:7876/test](http://localhost:7876/test)
+
+---
+
+## Technology Stack
+
+NuvixoCoin runs on a fully modernized dependency stack. The original NXT 1.13.1
+codebase shipped with libraries that are now end-of-life or carry known CVEs;
+all of them have been migrated:
+
+| Component | Original | NuvixoCoin 2.0.0 | Why |
+|---|---|---|---|
+| Java | 8 | 17 (LTS) | Supported through 2029 |
+| Jetty | 9.3.30 | 11.0.20 | Jetty 9/10/11 reached full EOL Jan 2026 |
+| H2 Database | 1.4.200 | 2.2.224 | CVE-2021-42392 — CVSS 10.0 RCE via JNDI |
+| Bouncy Castle | bcprov-jdk15on 1.70 | bcprov-jdk18on 1.78.1 | CVE-2024-34447, -30171, -29857, -33201 |
+| Lucene | 5.5.5 | 9.10.0 | End of life |
+| Apache Tika | 1.13 | 2.9.1 | Multiple parser CVEs |
+| Servlet API | javax.servlet | jakarta.servlet 5.0.0 | Required by Jetty 11 |
+| Build | shell scripts | Gradle 8.7 | Reproducible dependency management |
+
+This was a real source migration, not just a version bump — 288 files were
+migrated from `javax.servlet` to `jakarta.servlet`, H2 2.x SQL syntax changes
+were applied throughout the schema (IDENTITY columns, typed ARRAY columns,
+reserved keywords, foreign key constraints), and Jetty 11's restructured
+WebSocket and HTTP client APIs were adopted.
+
+See [MIGRATION-LOG.md](MIGRATION-LOG.md) for the complete technical record of
+every change, including the reasoning behind each decision.
 
 ---
 
