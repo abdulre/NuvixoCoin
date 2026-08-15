@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="bgf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"/>
+      <stop offset="100%" style="stop-color:#1a3a5c"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="520" fill="url(#bgf)" rx="16"/>
+  <rect width="900" height="520" fill="none" stroke="#00d4ff" stroke-width="2" rx="16" opacity="0.25"/>
+
+  <!-- Title -->
+  <text x="450" y="55" font-family="Arial,sans-serif" font-weight="bold" font-size="30"
+        fill="#ffffff" text-anchor="middle">NuvixoCoin Platform Features</text>
+  <line x1="60" y1="75" x2="840" y2="75" stroke="#00d4ff" stroke-width="1" opacity="0.25"/>
+
+  <!-- Feature 1: PoS -->
+  <rect x="40" y="100" width="250" height="120" rx="12" fill="#00d4ff" opacity="0.07" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="65" y="135" font-size="28">⚡</text>
+  <text x="105" y="135" font-family="Arial,sans-serif" font-weight="bold" font-size="17" fill="#00d4ff">Proof of Stake</text>
+  <text x="65" y="160" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">Energy-efficient consensus.</text>
+  <text x="65" y="178" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">Earn fees by forging with</text>
+  <text x="65" y="196" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">your NXC balance.</text>
+
+  <!-- Feature 2: Asset Exchange -->
+  <rect x="325" y="100" width="250" height="120" rx="12" fill="#00d4ff" opacity="0.07" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="350" y="135" font-size="28">🏦</text>
+  <text x="390" y="135" font-family="Arial,sans-serif" font-weight="bold" font-size="17" fill="#00d4ff">Asset Exchange</text>
+  <text x="350" y="160" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">Issue and trade custom</text>
+  <text x="350" y="178" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">tokens on-chain without</text>
+  <text x="350" y="196" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">third-party services.</text>
+
+  <!-- Feature 3: Monetary System -->
+  <rect x="610" y="100" width="250" height="120" rx="12" fill="#00d4ff" opacity="0.07" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="635" y="135" font-size="28">💱</text>
+  <text x="675" y="135" font-family="Arial,sans-serif" font-weight="bold" font-size="17" fill="#00d4ff">Monetary System</text>
+  <text x="635" y="160" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">Create on-chain currencies</text>
+  <text x="635" y="178" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">with configurable minting</text>
+  <text x="635" y="196" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">and exchange offers.</text>
+
+  <!-- Feature 4: Encrypted Messaging -->
+  <rect x="40" y="245" width="250" height="120" rx="12" fill="#00d4ff" opacity="0.07" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="65" y="280" font-size="28">📩</text>
+  <text x="105" y="280" font-family="Arial,sans-serif" font-weight="bold" font-size="17" fill="#00d4ff">Encrypted Messaging</text>
+  <text x="65" y="305" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">Send end-to-end encrypted</text>
+  <text x="65" y="323" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">messages between accounts</text>
+  <text x="65" y="341" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">on the blockchain.</text>
+
+  <!-- Feature 5: Phasing -->
+  <rect x="325" y="245" width="250" height="120" rx="12" fill="#00d4ff" opacity="0.07" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="350" y="280" font-size="28">📋</text>
+  <text x="390" y="280" font-family="Arial,sans-serif" font-weight="bold" font-size="17" fill="#00d4ff">Phasing</text>
+  <text x="350" y="305" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">Multi-signature and</text>
+  <text x="350" y="323" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">conditional transactions</text>
+  <text x="350" y="341" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">with approval logic.</text>
+
+  <!-- Feature 6: Shuffling -->
+  <rect x="610" y="245" width="250" height="120" rx="12" fill="#00d4ff" opacity="0.07" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="635" y="280" font-size="28">🔀</text>
+  <text x="675" y="280" font-family="Arial,sans-serif" font-weight="bold" font-size="17" fill="#00d4ff">Shuffling</text>
+  <text x="635" y="305" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">Built-in privacy mixing</text>
+  <text x="635" y="323" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">for NXC and assets with</text>
+  <text x="635" y="341" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.7">cryptographic security.</text>
+
+  <!-- Bottom bar -->
+  <line x1="60" y1="400" x2="840" y2="400" stroke="#00d4ff" stroke-width="1" opacity="0.2"/>
+  <text x="450" y="435" font-family="Arial,sans-serif" font-size="15" fill="#7eeaff"
+        text-anchor="middle">+ Voting · Digital Goods Store · Tagged Data · API · Addons</text>
+  <text x="450" y="465" font-family="Arial,sans-serif" font-weight="bold" font-size="16"
+        fill="#ffffff" text-anchor="middle" opacity="0.8">nuvixocoin.com</text>
+  <text x="450" y="490" font-family="Arial,sans-serif" font-size="13" fill="#00d4ff"
+        text-anchor="middle" opacity="0.6">Decentralized · Secure · Yours</text>
+</svg>

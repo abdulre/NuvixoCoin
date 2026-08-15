@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NuvixoCoin Whitepaper v1.0</title>
+<style>
+  :root {
+    --dark:#0a1628; --mid:#1a3a5c; --cyan:#00d4ff;
+    --white:#ffffff; --gray:#8899aa; --card:#111e2e;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', Georgia, serif;
+    background: var(--dark); color: var(--white);
+    line-height: 1.8;
+  }
+  .cover {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 60% 40%, rgba(0,212,255,0.1) 0%, transparent 60%), var(--dark);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 60px 40px;
+    border-bottom: 2px solid rgba(0,212,255,0.2);
+  }
+  .cover-logo {
+    font-size: 80px; font-weight: 900;
+    color: var(--cyan); margin-bottom: 8px;
+    letter-spacing: -2px;
+  }
+  .cover-logo span { color: var(--white); }
+  .cover-ticker {
+    font-size: 18px; letter-spacing: 6px;
+    color: var(--gray); margin-bottom: 40px;
+  }
+  .cover h1 {
+    font-size: 38px; font-weight: 300;
+    margin-bottom: 16px; max-width: 600px;
+  }
+  .cover p { color: var(--gray); font-size: 16px; margin-bottom: 48px; }
+  .cover-meta {
+    display: flex; gap: 48px; justify-content: center;
+    flex-wrap: wrap;
+  }
+  .meta-item { text-align: center; }
+  .meta-item label { display: block; font-size: 11px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; }
+  .meta-item span { font-size: 15px; color: var(--cyan); font-weight: 600; }
+
+  .doc { max-width: 820px; margin: 0 auto; padding: 60px 40px; }
+
+  .toc {
+    background: var(--card);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 12px; padding: 32px;
+    margin-bottom: 60px;
+  }
+  .toc h2 { color: var(--cyan); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 8px; }
+  .toc a { color: var(--white); text-decoration: none; font-size: 15px; }
+  .toc a:hover { color: var(--cyan); }
+  .toc .sub { font-size: 13px; color: var(--gray); }
+
+  .wp-section { margin-bottom: 64px; }
+  .section-num { color: var(--cyan); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+  h2.wp-title { font-size: 32px; font-weight: 700; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid rgba(0,212,255,0.15); }
+  h3 { font-size: 20px; color: var(--cyan); margin: 32px 0 12px; }
+  p { color: #ccd6e0; margin-bottom: 16px; font-size: 16px; }
+  ul, ol { padding-left: 24px; margin-bottom: 16px; }
+  li { color: #ccd6e0; margin-bottom: 8px; font-size: 16px; }
+
+  .highlight {
+    background: rgba(0,212,255,0.07);
+    border-left: 3px solid var(--cyan);
+    padding: 16px 20px; border-radius: 0 8px 8px 0;
+    margin: 24px 0;
+  }
+  .highlight p { margin: 0; color: var(--white); }
+
+  table { width: 100%; border-collapse: collapse; margin: 24px 0; }
+  th { padding: 12px 16px; text-align: left; color: var(--cyan); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; border-bottom: 2px solid rgba(0,212,255,0.2); }
+  td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccd6e0; font-size: 15px; }
+  td strong { color: var(--white); }
+
+  .formula {
+    background: var(--card); border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 8px; padding: 16px 20px; margin: 20px 0;
+    font-family: 'Courier New', monospace; color: var(--cyan);
+    font-size: 15px;
+  }
+
+  footer {
+    background: var(--card);
+    border-top: 1px solid rgba(0,212,255,0.1);
+    padding: 32px 40px; text-align: center;
+    color: var(--gray); font-size: 13px;
+  }
+  footer a { color: var(--cyan); text-decoration: none; }
+
+  @media print {
+    body { background: white; color: black; }
+    .cover { background: white; }
+    nav { display: none; }
+  }
+  @media (max-width: 600px) {
+    .doc { padding: 40px 20px; }
+    .cover { padding: 40px 20px; }
+    .cover-logo { font-size: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-logo">Nuvixo<span>Coin</span></div>
+  <div class="cover-ticker">N X C</div>
+  <h1>Technical Whitepaper</h1>
+  <p>A Decentralized Proof-of-Stake Blockchain Platform<br/>with Fixed Supply and Built-in Financial Tools</p>
+  <div class="cover-meta">
+    <div class="meta-item"><label>Version</label><span>1.0</span></div>
+    <div class="meta-item"><label>Date</label><span>June 2025</span></div>
+    <div class="meta-item"><label>Ticker</label><span>NXC</span></div>
+    <div class="meta-item"><label>Website</label><span>nuvixocoin.com</span></div>
+  </div>
+</div>
+
+<div class="doc">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#tech">Technical Architecture</a>
+        <div class="sub">3.1 Consensus · 3.2 Cryptography · 3.3 Database · 3.4 Networking</div>
+      </li>
+      <li><a href="#tokenomics">Tokenomics</a>
+        <div class="sub">4.1 Supply · 4.2 Distribution · 4.3 Forging Rewards</div>
+      </li>
+      <li><a href="#features">Platform Features</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#legal">Legal & License</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. ABSTRACT -->
+  <div class="wp-section" id="abstract">
+    <div class="section-num">Section 01</div>
+    <h2 class="wp-title">Abstract</h2>
+    <p>NuvixoCoin (NXC) is a decentralized Proof-of-Stake blockchain platform designed to provide secure, efficient, and feature-rich digital value transfer. Built on the battle-tested NXT codebase originally developed in 2013, NuvixoCoin inherits over a decade of blockchain engineering while introducing a fresh identity, modern security hardening, and a clearly defined economic model.</p>
+    <p>The platform operates with a fixed total supply of 1,000,000,000 NXC — no inflation, no mining, no pre-sale surprises. Block generation is powered entirely by stakeholders who earn transaction fees as their reward, creating a self-sustaining economic loop that incentivises long-term participation over short-term speculation.</p>
+    <div class="highlight">
+      <p>NuvixoCoin is not just a coin. It is a complete blockchain platform with a built-in asset exchange, monetary system, digital goods store, voting mechanism, encrypted messaging, privacy shuffling, and a full developer API — all available from day one.</p>
+    </div>
+  </div>
+
+  <!-- 2. INTRODUCTION -->
+  <div class="wp-section" id="intro">
+    <div class="section-num">Section 02</div>
+    <h2 class="wp-title">Introduction</h2>
+    <h3>2.1 Problem Statement</h3>
+    <p>The modern cryptocurrency landscape is dominated by two extremes: heavyweight Proof-of-Work chains that consume enormous energy, and complex smart-contract platforms with steep learning curves and unpredictable gas fees. Neither serves the everyday user who simply wants a fast, secure, and affordable way to transfer value and build applications.</p>
+    <p>Furthermore, most newer coins are built on rushed forks with undisclosed vulnerabilities, empty treasuries, and no working product — launched purely for speculative gain.</p>
+
+    <h3>2.2 The NuvixoCoin Approach</h3>
+    <p>NuvixoCoin takes a different path. Rather than reinventing the blockchain from scratch, it builds on the NXT protocol — one of the first pure Proof-of-Stake blockchains, operational since 2013 with a proven track record of security and stability. This approach provides:</p>
+    <ul>
+      <li>A decade of battle-tested consensus code with known behaviour</li>
+      <li>A rich feature set available immediately at launch</li>
+      <li>A clean, auditable codebase that any developer can inspect</li>
+      <li>A fresh economic model with full transparency from genesis block</li>
+    </ul>
+
+    <h3>2.3 Vision</h3>
+    <p>NuvixoCoin aims to become a reliable, community-driven blockchain platform that prioritises substance over hype. Every NXC in existence is accounted for from block zero. Every feature works out of the box. Every transaction is final and verifiable by anyone.</p>
+  </div>
+
+  <!-- 3. TECHNICAL -->
+  <div class="wp-section" id="tech">
+    <div class="section-num">Section 03</div>
+    <h2 class="wp-title">Technical Architecture</h2>
+
+    <h3>3.1 Consensus: Proof of Stake</h3>
+    <p>NuvixoCoin uses a pure Proof-of-Stake consensus mechanism. Block generators — called forgers — are selected probabilistically based on their effective stake, defined as their confirmed balance after 1,440 block confirmations (approximately 24 hours).</p>
+    <p>The probability that a forger generates the next block is proportional to their effective stake divided by the total effective stake of all active forgers. This ensures that larger stakeholders contribute more to network security while smaller holders can still participate meaningfully.</p>
+    <div class="formula">
+      P(forge) = effective_stake_account / total_effective_stake_network
+    </div>
+    <p>There are no block rewards in the traditional sense. Forgers receive the sum of all transaction fees included in the blocks they generate. This creates zero inflation while still incentivising participation.</p>
+
+    <h3>3.2 Cryptography</h3>
+    <p>NuvixoCoin uses industry-standard cryptographic primitives throughout:</p>
+    <ul>
+      <li><strong>Key generation:</strong> Curve25519 elliptic curve Diffie-Hellman for account keypairs</li>
+      <li><strong>Transaction signing:</strong> Ed25519 digital signatures</li>
+      <li><strong>Hashing:</strong> SHA-256 for block and transaction hashing</li>
+      <li><strong>Encrypted messaging:</strong> Curve25519 + AES-256 for end-to-end encrypted messages</li>
+      <li><strong>Passphrase hardening:</strong> SHA-256 derived private keys (Scrypt available for enhanced security)</li>
+    </ul>
+    <p>The cryptographic library used is Bouncy Castle (bcprov-jdk18on), the industry standard for Java cryptography.</p>
+
+    <h3>3.3 Database & Storage</h3>
+    <p>The blockchain state is stored in an H2 embedded relational database. This design choice provides ACID-compliant transactions, full SQL query capabilities for the API layer, and reliable data integrity without requiring an external database server.</p>
+    <p>The database schema uses a versioned migration system — each schema change is tracked and applied automatically on upgrade, ensuring safe forward migrations without data loss.</p>
+    <p>Full-text search is powered by Apache Lucene, enabling fast queries over aliases, asset names, goods listings, and tagged data.</p>
+
+    <h3>3.4 Networking</h3>
+    <p>Nodes communicate over a JSON-based peer-to-peer protocol on port 27874. The network layer supports both HTTP and WebSocket connections between peers, with configurable rate limiting (DoS protection at 30 requests/second per peer), connection pooling, and automatic peer discovery via a well-known peer bootstrap list.</p>
+    <p>The API server runs on port 7876 using Jetty, exposing a comprehensive JSON API for wallet operations, blockchain queries, and node administration.</p>
+
+    <h3>3.5 Block Parameters</h3>
+    <table>
+      <tr><th>Parameter</th><th>Value</th></tr>
+      <tr><td>Target block time</td><td>60 seconds</td></tr>
+      <tr><td>Max transactions per block</td><td>255</td></tr>
+      <tr><td>Max payload per block</td><td>44,880 bytes</td></tr>
+      <tr><td>Max rollback depth</td><td>800 blocks</td></tr>
+      <tr><td>Minimum forging balance</td><td>1,000 NXC</td></tr>
+      <tr><td>Guaranteed balance confirmations</td><td>1,440 blocks (~24h)</td></tr>
+      <tr><td>Leasing delay</td><td>1,440 blocks</td></tr>
+      <tr><td>Prunable message lifetime</td><td>90 days (configurable)</td></tr>
+    </table>
+  </div>
+
+  <!-- 4. TOKENOMICS -->
+  <div class="wp-section" id="tokenomics">
+    <div class="section-num">Section 04</div>
+    <h2 class="wp-title">Tokenomics</h2>
+
+    <h3>4.1 Supply</h3>
+    <p>The total supply of NuvixoCoin is fixed at exactly <strong>1,000,000,000 NXC</strong> (one billion). This supply was established at genesis and is mathematically enforced by the protocol — no new coins can ever be created.</p>
+    <p>Each NXC is divisible to 8 decimal places, giving a smallest unit of 0.00000001 NXC (one NQT — NuvixoCoin Quantum Token). This provides sufficient precision for micro-transactions and fee calculations for many decades.</p>
+    <div class="formula">
+      MAX_BALANCE_NQT = 1,000,000,000 × 100,000,000 = 100,000,000,000,000,000 NQT
+    </div>
+
+    <h3>4.2 Distribution</h3>
+    <p>The entire supply was allocated at the genesis block on 1 January 2025. Every NXC in existence is publicly visible on the blockchain from block zero.</p>
+    <table>
+      <tr><th>Allocation</th><th>NXC Amount</th><th>Percentage</th><th>Purpose</th></tr>
+      <tr><td><strong>Founder / Reserve</strong></td><td>888,888,889 NXC</td><td>88.89%</td><td>Development, exchange listings, ecosystem growth, team</td></tr>
+      <tr><td><strong>Community / Genesis</strong></td><td>111,111,111 NXC</td><td>11.11%</td><td>Presale participants, airdrops, community rewards</td></tr>
+      <tr><td><strong>Total</strong></td><td>1,000,000,000 NXC</td><td>100%</td><td></td></tr>
+    </table>
+
+    <h3>4.3 Forging Rewards</h3>
+    <p>There are no block subsidies. Forgers earn only the transaction fees from the blocks they generate. As network usage grows, fee revenue for active forgers grows proportionally. This model ensures that the coin supply remains fixed while still providing meaningful economic incentive for network participants.</p>
+    <p>The minimum balance required to participate in forging is 1,000 NXC. Any account holding this balance and running a node can start forging immediately — no registration, no staking lockup, no slashing risk.</p>
+  </div>
+
+  <!-- 5. FEATURES -->
+  <div class="wp-section" id="features">
+    <div class="section-num">Section 05</div>
+    <h2 class="wp-title">Platform Features</h2>
+    <p>NuvixoCoin is a full-featured blockchain platform. The following capabilities are available from launch with no additional development required:</p>
+    <table>
+      <tr><th>Feature</th><th>Description</th></tr>
+      <tr><td><strong>Asset Exchange</strong></td><td>Issue custom tokens, set buy/sell orders, trade peer-to-peer on-chain</td></tr>
+      <tr><td><strong>Monetary System</strong></td><td>Create currencies with configurable supply, minting rules, and reserve systems</td></tr>
+      <tr><td><strong>Digital Goods Store</strong></td><td>List and purchase digital products with on-chain escrow and feedback</td></tr>
+      <tr><td><strong>Voting & Polls</strong></td><td>On-chain governance with multiple voting models including stake-weighted</td></tr>
+      <tr><td><strong>Phasing</strong></td><td>Multi-sig transactions, conditional approval, time-locked transfers</td></tr>
+      <tr><td><strong>Shuffling</strong></td><td>Cryptographic privacy mixing for NXC and assets</td></tr>
+      <tr><td><strong>Encrypted Messaging</strong></td><td>End-to-end encrypted messages attached to or independent of transactions</td></tr>
+      <tr><td><strong>Aliases</strong></td><td>Human-readable account names registered on-chain</td></tr>
+      <tr><td><strong>Balance Leasing</strong></td><td>Lease forging power to another account without transferring funds</td></tr>
+      <tr><td><strong>Tagged Data</strong></td><td>Store arbitrary data on-chain with searchable metadata</td></tr>
+      <tr><td><strong>Account Properties</strong></td><td>Set key-value metadata on accounts for KYC, roles, and identity</td></tr>
+      <tr><td><strong>Full JSON API</strong></td><td>200+ API endpoints for developers to build wallets, explorers, and dApps</td></tr>
+    </table>
+  </div>
+
+  <!-- 6. SECURITY -->
+  <div class="wp-section" id="security">
+    <div class="section-num">Section 06</div>
+    <h2 class="wp-title">Security</h2>
+
+    <h3>6.1 Protocol Security</h3>
+    <p>The NXT Proof-of-Stake protocol has been running in production since 2013. Its consensus mechanism has been formally reviewed and the codebase has been audited by multiple independent researchers over its operational lifetime.</p>
+    <p>NuvixoCoin inherits this protocol unchanged, including its resistance to nothing-at-stake attacks (via forging delay), long-range attacks (via checkpointing), and Sybil attacks (via stake-weighted selection).</p>
+
+    <h3>6.2 Network Security</h3>
+    <ul>
+      <li>DoS protection on the peer server — rate limited to 30 requests per second per peer</li>
+      <li>API server bound to localhost by default — requires explicit configuration to expose publicly</li>
+      <li>Admin API protected by password — node refuses to start with empty password on public interfaces</li>
+      <li>CORS disabled by default — only explicitly whitelisted origins allowed</li>
+      <li>Peer connections enforce minimum version — old nodes are rejected</li>
+      <li>All inter-node communication uses signed JSON — forged messages are rejected</li>
+    </ul>
+
+    <h3>6.3 Dependency Security</h3>
+    <p>NuvixoCoin's build system includes the OWASP Dependency Check tool. Every release is scanned for known CVEs in all third-party libraries before publication. The project targets Java 17 LTS which receives security updates through 2029.</p>
+
+    <h3>6.4 Responsible Disclosure</h3>
+    <p>Security vulnerabilities should be reported privately to <strong>security@nuvixocoin.com</strong>. We follow a 90-day responsible disclosure policy and acknowledge all valid reports.</p>
+  </div>
+
+  <!-- 7. ROADMAP -->
+  <div class="wp-section" id="roadmap">
+    <div class="section-num">Section 07</div>
+    <h2 class="wp-title">Roadmap</h2>
+    <table>
+      <tr><th>Phase</th><th>Timeline</th><th>Milestones</th><th>Status</th></tr>
+      <tr><td><strong>Phase 1</strong></td><td>Q2 2025</td><td>Genesis launch, wallet, GitHub, branding</td><td>✅ Complete</td></tr>
+      <tr><td><strong>Phase 2</strong></td><td>Q3 2025</td><td>Public VPS nodes, website, block explorer, community channels</td><td>🔄 In Progress</td></tr>
+      <tr><td><strong>Phase 3</strong></td><td>Q4 2025</td><td>CoinGecko listing, CoinMarketCap listing, first exchange listing</td><td>⏳ Upcoming</td></tr>
+      <tr><td><strong>Phase 4</strong></td><td>Q1 2026</td><td>Developer grants, merchant integrations, governance activation</td><td>⏳ Upcoming</td></tr>
+      <tr><td><strong>Phase 5</strong></td><td>2026+</td><td>Mobile wallet, tier-1 exchanges, cross-chain bridges</td><td>⏳ Upcoming</td></tr>
+    </table>
+  </div>
+
+  <!-- 8. LEGAL -->
+  <div class="wp-section" id="legal">
+    <div class="section-num">Section 08</div>
+    <h2 class="wp-title">Legal & License</h2>
+    <p>NuvixoCoin is based on the NXT Reference Software, originally developed by The Nxt Core Developers and subsequently maintained by Jelurida IP B.V. and Jelurida Swiss SA.</p>
+    <p>The software is distributed under the <strong>Jelurida Public License (JPL) v2.0</strong>. NuvixoCoin modifications and additions are copyright © 2025 NuvixoCoin Developers.</p>
+    <div class="highlight">
+      <p><strong>Disclaimer:</strong> This whitepaper is for informational purposes only. NuvixoCoin is experimental software. Nothing in this document constitutes financial advice. Cryptocurrency investments carry significant risk. Always conduct your own research.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>NuvixoCoin Whitepaper v1.0 — June 2025</p>
+  <p style="margin-top:8px"><a href="https://nuvixocoin.com">nuvixocoin.com</a> · <a href="https://github.com/abdulre/nuvixocoin">github.com/abdulre/nuvixocoin</a> · security@nuvixocoin.com</p>
+</footer>
+
+</body>
+</html>

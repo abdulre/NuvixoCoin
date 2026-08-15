@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NuvixoCoin Block Explorer</title>
+<style>
+  :root {
+    --dark:#0a1628; --mid:#1a3a5c; --light:#1e4976;
+    --cyan:#00d4ff; --cyan2:#7eeaff;
+    --white:#ffffff; --gray:#8899aa; --card:#111e2e;
+    --green:#00c853; --red:#ff5252; --yellow:#ffd600;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--dark);color:var(--white);min-height:100vh;}
+
+  /* NAV */
+  nav{
+    background:rgba(10,22,40,0.97);
+    border-bottom:1px solid rgba(0,212,255,0.15);
+    padding:0 5%; height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:100;
+  }
+  .nav-brand{font-weight:900;font-size:18px;text-decoration:none;color:var(--white);}
+  .nav-brand span{color:var(--cyan);}
+  .nav-links{display:flex;gap:24px;list-style:none;}
+  .nav-links a{color:var(--gray);text-decoration:none;font-size:13px;transition:color 0.2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--cyan);}
+
+  /* SEARCH BAR */
+  .search-section{
+    background:linear-gradient(135deg,var(--mid) 0%,var(--dark) 100%);
+    padding:32px 5%;
+    border-bottom:1px solid rgba(0,212,255,0.1);
+  }
+  .search-wrap{max-width:700px;margin:0 auto;}
+  .search-wrap h1{font-size:22px;margin-bottom:16px;color:var(--white);}
+  .search-box{display:flex;gap:0;}
+  .search-box input{
+    flex:1;padding:12px 18px;
+    background:var(--card);
+    border:1px solid rgba(0,212,255,0.2);
+    border-right:none;
+    border-radius:8px 0 0 8px;
+    color:var(--white);font-size:15px;outline:none;
+  }
+  .search-box input::placeholder{color:var(--gray);}
+  .search-box input:focus{border-color:var(--cyan);}
+  .search-box button{
+    padding:12px 24px;
+    background:var(--cyan);color:var(--dark);
+    border:none;border-radius:0 8px 8px 0;
+    font-weight:700;font-size:14px;cursor:pointer;
+    transition:background 0.2s;
+  }
+  .search-box button:hover{background:var(--cyan2);}
+
+  /* STATS ROW */
+  .stats-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px;
+    background:rgba(0,212,255,0.1);
+    border-bottom:1px solid rgba(0,212,255,0.1);
+  }
+  .stat-box{
+    background:var(--card);
+    padding:16px 20px;text-align:center;
+  }
+  .stat-box .val{font-size:22px;font-weight:900;color:var(--cyan);display:block;}
+  .stat-box .lbl{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+
+  /* MAIN LAYOUT */
+  .main{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;}
+  @media(max-width:900px){.main{grid-template-columns:1fr;}}
+
+  .panel{border-right:1px solid rgba(0,212,255,0.08);}
+  .panel:last-child{border-right:none;}
+
+  .panel-header{
+    padding:16px 20px;
+    border-bottom:1px solid rgba(0,212,255,0.1);
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(0,212,255,0.03);
+  }
+  .panel-header h2{font-size:14px;font-weight:700;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;}
+  .panel-header a{font-size:12px;color:var(--gray);text-decoration:none;}
+  .panel-header a:hover{color:var(--cyan);}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;}
+  tr{border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;}
+  tr:hover{background:rgba(0,212,255,0.04);}
+  td{padding:10px 20px;font-size:13px;vertical-align:middle;}
+  .td-icon{width:36px;}
+  .icon-block{
+    width:32px;height:32px;border-radius:6px;
+    background:rgba(0,212,255,0.12);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;
+  }
+  .icon-tx{
+    width:32px;height:32px;border-radius:6px;
+    background:rgba(0,200,83,0.12);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;
+  }
+  .hash{color:var(--cyan);font-family:monospace;font-size:12px;cursor:pointer;}
+  .hash:hover{text-decoration:underline;}
+  .muted{color:var(--gray);font-size:11px;}
+  .amount{color:var(--green);font-weight:700;font-size:13px;}
+  .badge{
+    display:inline-block;padding:2px 8px;border-radius:10px;
+    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;
+  }
+  .badge-block{background:rgba(0,212,255,0.15);color:var(--cyan);}
+  .badge-tx{background:rgba(0,200,83,0.15);color:var(--green);}
+  .badge-pending{background:rgba(255,214,0,0.15);color:var(--yellow);}
+
+  /* DETAIL PANELS */
+  .detail-section{padding:24px 5%;max-width:1000px;margin:0 auto;display:none;}
+  .detail-section.active{display:block;}
+  .detail-card{
+    background:var(--card);
+    border:1px solid rgba(0,212,255,0.12);
+    border-radius:12px;overflow:hidden;margin-bottom:24px;
+  }
+  .detail-card-header{
+    padding:16px 20px;
+    background:rgba(0,212,255,0.05);
+    border-bottom:1px solid rgba(0,212,255,0.1);
+    display:flex;align-items:center;gap:12px;
+  }
+  .detail-card-header h3{font-size:16px;color:var(--white);}
+  .detail-card-header .badge{font-size:12px;}
+  .detail-rows{}
+  .detail-row{
+    display:flex;
+    padding:12px 20px;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+    gap:16px;
+  }
+  .detail-row:last-child{border-bottom:none;}
+  .detail-label{min-width:200px;color:var(--gray);font-size:13px;}
+  .detail-value{color:var(--white);font-size:13px;word-break:break-all;}
+  .detail-value .hash{font-size:13px;}
+
+  /* LOADING */
+  .loading{
+    text-align:center;padding:48px 20px;color:var(--gray);
+  }
+  .spinner{
+    width:32px;height:32px;border:3px solid rgba(0,212,255,0.2);
+    border-top-color:var(--cyan);border-radius:50%;
+    animation:spin 0.8s linear infinite;
+    margin:0 auto 16px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .error-msg{
+    text-align:center;padding:32px;color:var(--red);font-size:14px;
+  }
+
+  /* CONNECTION STATUS */
+  .conn-dot{
+    width:8px;height:8px;border-radius:50%;
+    display:inline-block;margin-right:6px;
+  }
+  .conn-dot.online{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .conn-dot.offline{background:var(--red);}
+  .conn-status{font-size:12px;color:var(--gray);}
+
+  footer{
+    background:#060e1a;border-top:1px solid rgba(0,212,255,0.08);
+    padding:20px 5%;text-align:center;
+    color:var(--gray);font-size:12px;margin-top:40px;
+  }
+  footer a{color:var(--cyan);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">Nuvixo<span>Coin</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="explorer.html" class="active">Explorer</a></li>
+    <li><a href="whitepaper.html">Whitepaper</a></li>
+    <li><a href="https://github.com/abdulre/nuvixocoin" target="_blank">GitHub</a></li>
+  </ul>
+  <div class="conn-status">
+    <span class="conn-dot" id="connDot"></span>
+    <span id="connText">Connecting...</span>
+  </div>
+</nav>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-wrap">
+    <h1>🔍 Block Explorer</h1>
+    <div class="search-box">
+      <input type="text" id="searchInput"
+             placeholder="Search by block height, transaction ID, or account address (NXC-...)"/>
+      <button onclick="handleSearch()">Search</button>
+    </div>
+  </div>
+</div>
+
+<!-- NETWORK STATS -->
+<div class="stats-row">
+  <div class="stat-box"><span class="val" id="statHeight">—</span><div class="lbl">Block Height</div></div>
+  <div class="stat-box"><span class="val" id="statTxCount">—</span><div class="lbl">Transactions</div></div>
+  <div class="stat-box"><span class="val" id="statPeers">—</span><div class="lbl">Connected Peers</div></div>
+  <div class="stat-box"><span class="val" id="statForging">—</span><div class="lbl">Forging Accounts</div></div>
+  <div class="stat-box"><span class="val" id="statVersion">—</span><div class="lbl">Node Version</div></div>
+  <div class="stat-box"><span class="val" id="statSupply">1B</span><div class="lbl">Total Supply NXC</div></div>
+</div>
+
+<!-- MAIN GRID: BLOCKS + TRANSACTIONS -->
+<div id="mainView">
+  <div class="main">
+    <!-- Latest Blocks -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>⛓ Latest Blocks</h2>
+        <a href="#" onclick="loadBlocks();return false;">Refresh</a>
+      </div>
+      <div id="blocksTable">
+        <div class="loading"><div class="spinner"></div>Loading blocks...</div>
+      </div>
+    </div>
+
+    <!-- Latest Transactions -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>💸 Latest Transactions</h2>
+        <a href="#" onclick="loadTransactions();return false;">Refresh</a>
+      </div>
+      <div id="txTable">
+        <div class="loading"><div class="spinner"></div>Loading transactions...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL VIEW -->
+<div class="detail-section" id="detailView">
+  <div id="detailContent"></div>
+  <button onclick="showMain()"
+          style="background:transparent;border:1px solid rgba(0,212,255,0.3);color:var(--cyan);
+                 padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;margin-top:8px;">
+    ← Back to Explorer
+  </button>
+</div>
+
+<footer>
+  <p>NuvixoCoin Block Explorer · <a href="https://nuvixocoin.com">nuvixocoin.com</a> · <a href="https://github.com/abdulre/nuvixocoin">GitHub</a></p>
+  <p style="margin-top:6px">Data served live from NuvixoCoin nodes. Not financial advice.</p>
+</footer>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+// Tries seed nodes in order, falls back to localhost
+const NODES = [
+  'https://seed1.nuvixocoin.com:7876',
+  'https://seed2.nuvixocoin.com:7876',
+  'http://localhost:7876'
+];
+let NODE = NODES[2]; // default to localhost, auto-detects below
+const REFRESH_INTERVAL = 15000; // 15 seconds
+
+// ── API HELPER ────────────────────────────────────────────────────────────────
+async function api(params) {
+  const url = `${NODE}/nxt?` + new URLSearchParams(params);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+function shortHash(hash, len=12) {
+  if (!hash) return '—';
+  return hash.length > len*2 ? hash.slice(0,len)+'...'+hash.slice(-6) : hash;
+}
+
+function timeAgo(ts) {
+  const epoch = 1420070400; // NXT epoch: Jan 1 2015 UTC... NuvixoCoin uses 2025-01-01
+  // NuvixoCoin epochBeginning = 2025-01-01 00:00:00 UTC = 1735689600
+  const EPOCH = 1735689600;
+  const unixTs = EPOCH + ts;
+  const diff = Math.floor(Date.now()/1000) - unixTs;
+  if (diff < 60)   return diff + 's ago';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400)return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+function formatNXC(nqt) {
+  if (!nqt) return '0 NXC';
+  const val = parseInt(nqt) / 100000000;
+  return val.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:4}) + ' NXC';
+}
+
+// ── CONNECTION ────────────────────────────────────────────────────────────────
+async function detectNode() {
+  for (const node of NODES) {
+    try {
+      NODE = node;
+      const data = await api({requestType:'getBlockchainStatus'});
+      if (data.application === 'NuvixoCoin') {
+        document.getElementById('connDot').className = 'conn-dot online';
+        document.getElementById('connText').textContent = 'Connected · ' + node.replace('http://','').replace('https://','');
+        return true;
+      }
+    } catch(e) {}
+  }
+  document.getElementById('connDot').className = 'conn-dot offline';
+  document.getElementById('connText').textContent = 'No node found';
+  return false;
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const status = await api({requestType:'getBlockchainStatus'});
+    document.getElementById('statHeight').textContent =
+      parseInt(status.numberOfBlocks-1).toLocaleString();
+    document.getElementById('statVersion').textContent = status.version || '2.0.0';
+    document.getElementById('statPeers').textContent = status.numberOfPeers || '0';
+    document.getElementById('statForging').textContent = status.numberOfForgingAccounts || '—';
+  } catch(e) {
+    console.log('Stats error:', e);
+  }
+}
+
+// ── BLOCKS ────────────────────────────────────────────────────────────────────
+async function loadBlocks() {
+  const el = document.getElementById('blocksTable');
+  try {
+    const data = await api({requestType:'getBlocks', firstIndex:0, lastIndex:19});
+    const blocks = data.blocks || [];
+    if (!blocks.length) { el.innerHTML='<div class="loading">No blocks yet</div>'; return; }
+
+    let html = '<table>';
+    blocks.forEach(b => {
+      const txCount = b.numberOfTransactions || 0;
+      html += `<tr onclick="showBlock('${b.block}')">
+        <td class="td-icon"><div class="icon-block">⛓</div></td>
+        <td>
+          <div class="hash">#${parseInt(b.height).toLocaleString()}</div>
+          <div class="muted">${timeAgo(b.timestamp)}</div>
+        </td>
+        <td>
+          <div style="font-size:13px">${shortHash(b.block)}</div>
+          <div class="muted">Forger: ${shortHash(b.generatorRS || b.generator, 8)}</div>
+        </td>
+        <td style="text-align:right">
+          <span class="badge badge-block">${txCount} tx</span><br/>
+          <span class="muted">${formatNXC(b.totalFeeNQT)}</span>
+        </td>
+      </tr>`;
+    });
+    html += '</table>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Failed to load blocks.<br/>Make sure your node is running.</div>`;
+  }
+}
+
+// ── TRANSACTIONS ──────────────────────────────────────────────────────────────
+const TX_TYPES = {
+  '0': 'Payment', '1': 'Messaging', '2': 'Asset',
+  '3': 'Digital Goods', '4': 'Account Control',
+  '5': 'Monetary System', '7': 'Data'
+};
+
+async function loadTransactions() {
+  const el = document.getElementById('txTable');
+  try {
+    const data = await api({requestType:'getTransactions', firstIndex:0, lastIndex:19});
+    const txs = data.transactions || [];
+    if (!txs.length) {
+      el.innerHTML='<div class="loading">No transactions yet.<br/><span style="font-size:12px;color:var(--gray)">Send your first NXC to see it here.</span></div>';
+      return;
+    }
+
+    let html = '<table>';
+    txs.forEach(tx => {
+      const type = TX_TYPES[tx.type] || 'Transaction';
+      html += `<tr onclick="showTransaction('${tx.transaction}')">
+        <td class="td-icon"><div class="icon-tx">💸</div></td>
+        <td>
+          <div class="hash">${shortHash(tx.transaction)}</div>
+          <div class="muted">${timeAgo(tx.timestamp)}</div>
+        </td>
+        <td>
+          <div style="font-size:12px">From: ${shortHash(tx.senderRS || tx.sender, 10)}</div>
+          <div style="font-size:12px;color:var(--gray)">To: ${shortHash(tx.recipientRS || tx.recipient, 10)}</div>
+        </td>
+        <td style="text-align:right">
+          <div class="amount">${formatNXC(tx.amountNQT)}</div>
+          <span class="badge badge-tx">${type}</span>
+        </td>
+      </tr>`;
+    });
+    html += '</table>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Failed to load transactions.</div>`;
+  }
+}
+
+// ── DETAIL: BLOCK ─────────────────────────────────────────────────────────────
+async function showBlock(blockId) {
+  showDetail('<div class="loading"><div class="spinner"></div>Loading block...</div>');
+  try {
+    const b = await api({requestType:'getBlock', block:blockId, includeTransactions:true});
+    let html = `
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <span style="font-size:24px">⛓</span>
+          <h3>Block #${parseInt(b.height).toLocaleString()}</h3>
+          <span class="badge badge-block">${b.numberOfTransactions} transactions</span>
+        </div>
+        <div class="detail-rows">
+          <div class="detail-row"><span class="detail-label">Block ID</span><span class="detail-value"><span class="hash">${b.block}</span></span></div>
+          <div class="detail-row"><span class="detail-label">Height</span><span class="detail-value">${parseInt(b.height).toLocaleString()}</span></div>
+          <div class="detail-row"><span class="detail-label">Timestamp</span><span class="detail-value">${timeAgo(b.timestamp)} (${b.timestamp})</span></div>
+          <div class="detail-row"><span class="detail-label">Forger</span><span class="detail-value"><span class="hash" onclick="showAccount('${b.generatorRS}')">${b.generatorRS}</span></span></div>
+          <div class="detail-row"><span class="detail-label">Total Amount</span><span class="detail-value">${formatNXC(b.totalAmountNQT)}</span></div>
+          <div class="detail-row"><span class="detail-label">Total Fees</span><span class="detail-value">${formatNXC(b.totalFeeNQT)}</span></div>
+          <div class="detail-row"><span class="detail-label">Payload Length</span><span class="detail-value">${b.payloadLength} bytes</span></div>
+          <div class="detail-row"><span class="detail-label">Base Target</span><span class="detail-value">${b.baseTarget}</span></div>
+          <div class="detail-row"><span class="detail-label">Previous Block</span><span class="detail-value"><span class="hash" onclick="showBlock('${b.previousBlock}')">${b.previousBlock}</span></span></div>
+        </div>
+      </div>`;
+
+    if (b.transactions && b.transactions.length) {
+      html += `<div class="detail-card">
+        <div class="detail-card-header"><h3>Transactions in this block</h3></div>
+        <table>`;
+      b.transactions.forEach(tx => {
+        html += `<tr onclick="showTransaction('${tx.transaction}')">
+          <td class="td-icon"><div class="icon-tx">💸</div></td>
+          <td><div class="hash">${shortHash(tx.transaction)}</div></td>
+          <td><div style="font-size:12px">${shortHash(tx.senderRS,12)} → ${shortHash(tx.recipientRS,12)}</div></td>
+          <td style="text-align:right"><div class="amount">${formatNXC(tx.amountNQT)}</div></td>
+        </tr>`;
+      });
+      html += '</table></div>';
+    }
+
+    showDetail(html);
+  } catch(e) {
+    showDetail(`<div class="error-msg">Block not found or node error.</div>`);
+  }
+}
+
+// ── DETAIL: TRANSACTION ───────────────────────────────────────────────────────
+async function showTransaction(txId) {
+  showDetail('<div class="loading"><div class="spinner"></div>Loading transaction...</div>');
+  try {
+    const tx = await api({requestType:'getTransaction', transaction:txId});
+    const type = TX_TYPES[tx.type] || 'Transaction';
+    const html = `
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <span style="font-size:24px">💸</span>
+          <h3>Transaction</h3>
+          <span class="badge badge-tx">${type}</span>
+          ${tx.confirmations > 0 ? '<span class="badge" style="background:rgba(0,200,83,0.15);color:var(--green)">Confirmed</span>' : '<span class="badge badge-pending">Pending</span>'}
+        </div>
+        <div class="detail-rows">
+          <div class="detail-row"><span class="detail-label">Transaction ID</span><span class="detail-value">${tx.transaction}</span></div>
+          <div class="detail-row"><span class="detail-label">Full Hash</span><span class="detail-value" style="font-family:monospace;font-size:12px">${tx.fullHash}</span></div>
+          <div class="detail-row"><span class="detail-label">Block</span><span class="detail-value"><span class="hash" onclick="showBlock('${tx.block}')">#${parseInt(tx.height).toLocaleString()} (${shortHash(tx.block)})</span></span></div>
+          <div class="detail-row"><span class="detail-label">Timestamp</span><span class="detail-value">${timeAgo(tx.timestamp)}</span></div>
+          <div class="detail-row"><span class="detail-label">Confirmations</span><span class="detail-value" style="color:var(--green)">${tx.confirmations}</span></div>
+          <div class="detail-row"><span class="detail-label">Sender</span><span class="detail-value"><span class="hash" onclick="showAccount('${tx.senderRS}')">${tx.senderRS}</span></span></div>
+          <div class="detail-row"><span class="detail-label">Recipient</span><span class="detail-value"><span class="hash" onclick="showAccount('${tx.recipientRS}')">${tx.recipientRS || '—'}</span></span></div>
+          <div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value" style="color:var(--green);font-weight:bold">${formatNXC(tx.amountNQT)}</span></div>
+          <div class="detail-row"><span class="detail-label">Fee</span><span class="detail-value">${formatNXC(tx.feeNQT)}</span></div>
+          <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value">${type} (type ${tx.type}, subtype ${tx.subtype})</span></div>
+        </div>
+      </div>`;
+    showDetail(html);
+  } catch(e) {
+    showDetail(`<div class="error-msg">Transaction not found.</div>`);
+  }
+}
+
+// ── DETAIL: ACCOUNT ───────────────────────────────────────────────────────────
+async function showAccount(accountRS) {
+  showDetail('<div class="loading"><div class="spinner"></div>Loading account...</div>');
+  try {
+    const acc = await api({requestType:'getAccount', account:accountRS, includeEffectiveBalance:true});
+    const txs = await api({requestType:'getBlockchainTransactions', account:accountRS, firstIndex:0, lastIndex:9});
+
+    let html = `
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <span style="font-size:24px">👤</span>
+          <h3>${acc.accountRS}</h3>
+          ${acc.name ? `<span class="badge badge-block">${acc.name}</span>` : ''}
+        </div>
+        <div class="detail-rows">
+          <div class="detail-row"><span class="detail-label">Account RS</span><span class="detail-value">${acc.accountRS}</span></div>
+          <div class="detail-row"><span class="detail-label">Account ID</span><span class="detail-value" style="font-family:monospace">${acc.account}</span></div>
+          <div class="detail-row"><span class="detail-label">Balance</span><span class="detail-value" style="color:var(--cyan);font-weight:bold;font-size:16px">${formatNXC(acc.balanceNQT)}</span></div>
+          <div class="detail-row"><span class="detail-label">Unconfirmed Balance</span><span class="detail-value">${formatNXC(acc.unconfirmedBalanceNQT)}</span></div>
+          <div class="detail-row"><span class="detail-label">Effective Balance</span><span class="detail-value">${(acc.effectiveBalanceNXT||0).toLocaleString()} NXC</span></div>
+          <div class="detail-row"><span class="detail-label">Forged Balance</span><span class="detail-value">${formatNXC(acc.forgedBalanceNQT)}</span></div>
+          ${acc.publicKey ? `<div class="detail-row"><span class="detail-label">Public Key</span><span class="detail-value" style="font-family:monospace;font-size:11px">${acc.publicKey}</span></div>` : ''}
+          ${acc.description ? `<div class="detail-row"><span class="detail-label">Description</span><span class="detail-value">${acc.description}</span></div>` : ''}
+        </div>
+      </div>`;
+
+    const txList = txs.transactions || [];
+    if (txList.length) {
+      html += `<div class="detail-card">
+        <div class="detail-card-header"><h3>Recent Transactions</h3></div>
+        <table>`;
+      txList.forEach(tx => {
+        const isSender = tx.senderRS === accountRS;
+        html += `<tr onclick="showTransaction('${tx.transaction}')">
+          <td class="td-icon"><div class="icon-tx">${isSender ? '↑' : '↓'}</div></td>
+          <td><div class="hash">${shortHash(tx.transaction)}</div><div class="muted">${timeAgo(tx.timestamp)}</div></td>
+          <td><div style="font-size:12px">${isSender ? 'To: '+shortHash(tx.recipientRS,12) : 'From: '+shortHash(tx.senderRS,12)}</div></td>
+          <td style="text-align:right"><div class="amount" style="color:${isSender?'var(--red)':'var(--green)'}">${isSender?'-':'+'} ${formatNXC(tx.amountNQT)}</div></td>
+        </tr>`;
+      });
+      html += '</table></div>';
+    }
+
+    showDetail(html);
+  } catch(e) {
+    showDetail(`<div class="error-msg">Account not found.</div>`);
+  }
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+async function handleSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+
+  if (q.startsWith('NXC-') || q.match(/^\d{15,}$/)) {
+    showAccount(q); return;
+  }
+  if (q.match(/^\d{1,7}$/)) {
+    // block height lookup
+    try {
+      const b = await api({requestType:'getBlockIdByHeight', height:q});
+      showBlock(b.block); return;
+    } catch(e) {}
+  }
+  // Try as transaction ID
+  if (q.match(/^\d{15,}$/)) { showTransaction(q); return; }
+  // Try as block ID
+  try { await showBlock(q); } catch(e) {
+    try { await showTransaction(q); } catch(e2) {
+      showDetail(`<div class="error-msg">Nothing found for: ${q}</div>`);
+    }
+  }
+}
+
+document.getElementById('searchInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') handleSearch();
+});
+
+// ── VIEW HELPERS ──────────────────────────────────────────────────────────────
+function showDetail(html) {
+  document.getElementById('mainView').style.display = 'none';
+  document.getElementById('detailView').classList.add('active');
+  document.getElementById('detailContent').innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function showMain() {
+  document.getElementById('mainView').style.display = 'block';
+  document.getElementById('detailView').classList.remove('active');
+  document.getElementById('searchInput').value = '';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function init() {
+  await detectNode();
+  await Promise.all([loadStats(), loadBlocks(), loadTransactions()]);
+  setInterval(() => {
+    loadStats();
+    if (!document.getElementById('detailView').classList.contains('active')) {
+      loadBlocks();
+      loadTransactions();
+    }
+  }, REFRESH_INTERVAL);
+}
+
+init();
+</script>
+</body>
+</html>
