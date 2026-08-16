@@ -250,7 +250,11 @@ public class PeerWebSocket {
                 }
                 requestBytes = outStream.toByteArray();
             }
-            ByteBuffer buf = ByteBuffer.allocate(requestBytes.length + 20);
+            // Header is version(4) + requestId(8) + flags(4) + requestLength(4) = 20 bytes.
+            // The original "+ 20" left exactly zero slack and overflowed under the
+            // Jetty 11 websocket framing. Allocate header size explicitly plus a small
+            // safety margin so the puts below can never exceed the buffer.
+            ByteBuffer buf = ByteBuffer.allocate(requestBytes.length + 32);
             buf.putInt(version)
                .putLong(requestId)
                .putInt(flags)
@@ -304,7 +308,9 @@ public class PeerWebSocket {
                     }
                     responseBytes = outStream.toByteArray();
                 }
-                ByteBuffer buf = ByteBuffer.allocate(responseBytes.length + 20);
+                // Header is 20 bytes (see request path). Original "+ 20" left zero slack
+                // and overflowed under Jetty 11 framing — use a small safety margin.
+                ByteBuffer buf = ByteBuffer.allocate(responseBytes.length + 32);
                 buf.putInt(version)
                    .putLong(requestId)
                    .putInt(flags)
