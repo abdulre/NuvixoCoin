@@ -301,7 +301,19 @@ final class BlockImpl implements Block {
 
     byte[] bytes() {
         if (bytes == null) {
-            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0));
+            // Size the buffer from the ACTUAL field lengths rather than hardcoded 32/64
+            // constants. The original fixed sizing threw BufferOverflowException at the
+            // put() below whenever a field (e.g. generationSignature or blockSignature)
+            // was longer than the constant reserved for it — which only surfaced when a
+            // node parsed a block RECEIVED from a peer (BlockImpl.parseBlock ->
+            // checkSignature -> bytes()), not when forging locally. Computing capacity
+            // from the real array lengths can never be too small.
+            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4
+                    + payloadHash.length
+                    + getGeneratorPublicKey().length
+                    + generationSignature.length
+                    + (previousBlockHash != null ? previousBlockHash.length : 0)
+                    + (blockSignature != null ? blockSignature.length : 0));
             buffer.order(ByteOrder.LITTLE_ENDIAN);
             buffer.putInt(version);
             buffer.putInt(timestamp);
@@ -313,7 +325,9 @@ final class BlockImpl implements Block {
             buffer.put(payloadHash);
             buffer.put(getGeneratorPublicKey());
             buffer.put(generationSignature);
-            buffer.put(previousBlockHash);
+            if (previousBlockHash != null) {
+                buffer.put(previousBlockHash);
+            }
             if (blockSignature != null) {
                 buffer.put(blockSignature);
             }
